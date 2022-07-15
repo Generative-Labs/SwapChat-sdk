@@ -29,7 +29,7 @@ $ yarn add swap-chat-js
 ```javascript
 import SwapChatSdk from 'swap-chat-js';
 
-// 需要创建scsdk的实例 传入两个真实dom 元素为参数，第一个参数为吊起元素的触发器，第二个元素为聊天工具的插槽容器
+// 需要创建SwapChatSdk的实例 传入两个真实dom 元素为参数，第一个参数为调起元素的触发器，第二个元素为聊天工具的插槽容器
 const SwapChatSdkStance = new SwapChatSdk(
       dom1,
       dom2
