@@ -11,7 +11,7 @@
 2. 开源协议：MIT
 3. 发布日期：2021-07-14
 4. 联系方式：1157123521@qq.com
-5. 开源地址：git+https://github.com/HanTengfeifei/SwapChat.git
+5. 开源地址：https://github.com/Generative-Labs/swap-chat-js.git
 //
 ## 主要功能
 //
