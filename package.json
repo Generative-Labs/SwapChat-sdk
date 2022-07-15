@@ -1,0 +1,42 @@
+{
+  "name": "scsdk",
+  "version": "1.0.13",
+  "description": "this is a chrome extension",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HanTengfeifei/SwapChat.git"
+  },
+  "keywords": [
+    "SwapChat",
+    "web3"
+  ],
+  "author": "tfhan",
+  "license": "MIT",
+  "dependencies": {
+    "webpack-dev-server": "^4.9.3"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.7",
+    "@rollup/plugin-json": "^4.1.0",
+    "babel-loader": "^8.2.2",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.4",
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "bugs": {
+    "url": "https://github.com/HanTengfeifei/SwapChat/issues"
+  },
+  "homepage": "https://github.com/HanTengfeifei/SwapChat#readme"
+}
