@@ -1,3 +1,4 @@
+
 # swap-chat-js是一款款专注于在你的项目中添加web3通讯能力的插件
 
 ## 序言
@@ -11,8 +12,6 @@
 3. 发布日期：2021-07-14
 4. 联系方式：1157123521@qq.com
 5. 开源地址：git+https://github.com/HanTengfeifei/SwapChat.git
-
-## 项目前后端代码示例（已闭环）
 //
 ## 主要功能
 //
