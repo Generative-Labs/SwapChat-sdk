@@ -1,6 +1,6 @@
 {
-  "name": "scsdk",
-  "version": "1.0.14",
+  "name": "swap-chat-js",
+  "version": "1.0.0",
   "description": "this is a chrome extension",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "author": "tfhan",
   "license": "MIT",
   "dependencies": {
+
     "webpack-dev-server": "^4.9.3"
   },
   "files": [
