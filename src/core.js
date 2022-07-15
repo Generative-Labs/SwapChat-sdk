@@ -9,7 +9,7 @@ class SwapChatSdk {
     this.button = content;
     try {
       container.style =
-        "width:400px;position:fixed;right:25px;bottom:0px;z-index:1000,width:400px;min-height: 50px;box-shadow: rgba(101, 119, 134, 0.2) 0px 0px 15px, rgba(101, 119, 134, 0.15) 0px 0px 3px 1px;";
+        "display:none;width:400px;position:fixed;right:25px;bottom:0px;z-index:1000,width:400px;min-height: 50px;box-shadow: rgba(101, 119, 134, 0.2) 0px 0px 15px, rgba(101, 119, 134, 0.15) 0px 0px 3px 1px;";
     } catch (e) {
       console.log("");
     }
