@@ -9,7 +9,7 @@
 
 1. 原创作者：tfhan
 2. 开源协议：MIT
-3. 发布日期：2021-07-14
+3. 发布日期：2022-07-14
 4. 联系方式：1157123521@qq.com
 5. 开源地址：https://github.com/Generative-Labs/swap-chat-js.git
 //
