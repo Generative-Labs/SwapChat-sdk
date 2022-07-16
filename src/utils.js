@@ -1,3 +1,5 @@
+import { createJsxClosingElement } from "typescript";
+
 export function addEvent(ele, type, handle) {
   if (Object.prototype.hasOwnProperty.call(ele, "addEventListener")) {
     ele.addEventListener(type, handle, false);
@@ -23,3 +25,14 @@ export function isDOM() {
         );
       };
 }
+export const createElement = (htmlTemplate = "") => {
+  const div = document.createElement("div");
+  div.innerHTML = htmlTemplate;
+  return div.childNodes[0];
+};
+export const getElementById = (className = "") => {
+  if (typeof className !== "string") {
+    return;
+  }
+  return document.getElementById(className);
+};
