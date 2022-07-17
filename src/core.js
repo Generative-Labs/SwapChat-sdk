@@ -33,6 +33,7 @@ class SwapChatSdk {
     addEvent(firstButtonDom, "click", function () {
       if (that.status) {
         that.closeClient();
+        that.status = false;
       } else {
         that.creatClient();
         that.status = true;
@@ -40,6 +41,10 @@ class SwapChatSdk {
     });
   }
   creatClient() {
+    if (this.currentMessageBoxEle) {
+      this.container.appendChild(this.currentMessageBoxEle);
+      return;
+    }
     let messageBoxEle = createElement(`<div id="web3-housechan-message-box">
             </div>`);
     let homeIconEle = createElement(
@@ -95,13 +100,10 @@ class SwapChatSdk {
 
     messageBoxEle.appendChild(messageBodyEle);
     this.container.appendChild(messageBoxEle);
+    this.currentMessageBoxEle = messageBoxEle;
   }
   closeClient() {
-    const messageBoxDom = document.getElementById("web3-housechan-message-box");
-    if (messageBoxDom) {
-      messageBoxDom.style.display = "none";
-      this.status = false;
-    }
+    this.container.removeChild(this.currentMessageBoxEle);
   }
 }
 
