@@ -1,6 +1,5 @@
 import { addEvent, isDOM, createElement, getElementById } from "./utils";
 import { iframeUrl } from "./constants";
-console.log("eee", iframeUrl);
 class SwapChatSdk {
   constructor(content, container) {
     if (!isDOM()(content) || !isDOM()(container)) {
@@ -34,7 +33,6 @@ class SwapChatSdk {
     addEvent(firstButtonDom, "click", function () {
       if (that.status) {
         that.closeClient();
-        console.log("666888");
       } else {
         that.creatClient();
         that.status = true;
@@ -42,8 +40,7 @@ class SwapChatSdk {
     });
   }
   creatClient() {
-    let messageBoxEle =
-      createElement(`<div class="twitter-housechan-message-box" id="web3-housechan-message-box">
+    let messageBoxEle = createElement(`<div id="web3-housechan-message-box">
             </div>`);
     let homeIconEle = createElement(
       '<img class="home-icon" src="https://chat.web3messaging.online/assets/icon/newHomeHeaderIcon.svg" alt="">'
@@ -69,13 +66,13 @@ class SwapChatSdk {
           "src",
           "https://d97ch61yqe5j6.cloudfront.net/frontend/headerDown.png"
         );
-        messageBodyEle.style.maxHeight = "666px";
+        messageBodyEle.style.maxHeight = "0px";
       } else {
         slideToggleIconElement.setAttribute(
           "src",
           "https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png"
         );
-        messageBodyEle.style.maxHeight = "0px";
+        messageBodyEle.style.maxHeight = "666px";
       }
     });
     addEvent(goHomeIconEle, "click", function (e) {
@@ -86,7 +83,6 @@ class SwapChatSdk {
         IframeDomWrapper.innerHTML = `<iframe class="twitter-housechan-message-header-iframe" style='width: 100%; height: 600px; border: 0;' src="https://chat.web3messaging.online"></iframe>`;
       }
     });
-    console.log("element", messageBoxEle, messageBoxEle.appendChild);
     messageHeaderEle.appendChild(homeIconEle);
     messageHeaderEle.appendChild(goHomeIconEle);
     messageHeaderEle.appendChild(slideToggleIconELe);
@@ -98,7 +94,6 @@ class SwapChatSdk {
       ></iframe>`;
 
     messageBoxEle.appendChild(messageBodyEle);
-    console.log("messageBodyEle", messageBodyEle, messageBodyEle.appendChild);
     this.container.appendChild(messageBoxEle);
   }
   closeClient() {
