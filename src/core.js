@@ -64,7 +64,16 @@ class SwapChatSdk {
       "<img class='slide-toggle-icon' id='web3-slide-toggle-icon'  src='https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png' alt='' style='position: absolute;right: 12px;height: 22px;width: auto;z-index: 999;margin-right: 8px;border-radius: 4px;cursor: pointer;'>"
     );
     let messageHeaderEle =
-      createElement(`<div class="twitter-swapchat-message-header" style='min-width:240px;position:relative;width:100%' >
+      createElement(`<div class="twitter-swapchat-message-header" style='min-width:240px;position:relative;width:100%;align-items: center;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: left;
+      font-family: sans-serif;
+      padding-lef:20px;
+      border-bottom: 1px solid #F2F2F2;' >
             </div>
         `);
     let messageBodyEle = createElement(
