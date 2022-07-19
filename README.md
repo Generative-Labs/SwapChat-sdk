@@ -64,7 +64,8 @@ function App() {
 }
 
 export default App;
-
+```
+```vue
 //vue项目示例index.vue
 <template>
   <div class="hello">
@@ -99,3 +100,4 @@ export default {
 <style scoped>
 
 </style>
+```
