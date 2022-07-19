@@ -5,7 +5,7 @@ class SwapChatSdk {
     if (!isDOM()(content) || !isDOM()(container)) {
       return this;
     }
-    const defaultOp = { height: 600 };
+    const defaultOp = { height: 600, width: 400 };
     this.defaultOptions =
       Object.prototype.toString.call(options) === "[object Object]"
         ? Object.assign({}, defaultOp, options)
