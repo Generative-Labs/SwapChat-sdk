@@ -47,7 +47,11 @@ function App() {
   useEffect(() => {
     const SwapChatSdkStance = new SwapChatSdk(
       buttonRef.current,
-      containRef.current
+      containRef.current,
+      {
+        width:400,
+        height:600,
+      }
     );
     SwapChatSdkStance.exect();
   }, []);
