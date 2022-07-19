@@ -1,6 +1,6 @@
 {
   "name": "swap-chat-js",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "this is a chrome extension",
   "main": "lib/index.js",
   "scripts": {
