@@ -36,7 +36,7 @@ const SwapChatSdkStance = new SwapChatSdk(
     );
 //  需要调用实例的方法 instance.exect()
 SwapChatSdkStance.exect()
-//创建shi li
+
 //react项目示例index.jsx
 import SwapChatSdk from 'swap-chat-js';
 import react, { useEffect, useRef } from "react";
@@ -65,3 +65,37 @@ function App() {
 
 export default App;
 
+//vue项目示例index.vue
+<template>
+  <div class="hello">
+    <button ref="button"></button>
+    <div ref="container">
+
+    </div>
+
+    
+  </div>
+</template>
+<script>
+import { getCurrentInstance} from 'vue';
+import SwapChatSdk from 'swap-chat-js'
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  mounted() {
+    const instance = getCurrentInstance()
+     const SwapChatSdkStance = new SwapChatSdk(
+      instance.refs.button,
+      instance.refs.container
+    );
+    SwapChatSdkStance.exect();
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+</style>
