@@ -1,5 +1,3 @@
-import { createJsxClosingElement } from "typescript";
-
 export function addEvent(ele, type, handle) {
   if (Object.prototype.hasOwnProperty.call(ele, "addEventListener")) {
     ele.addEventListener(type, handle, false);
