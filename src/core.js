@@ -42,6 +42,7 @@ class SwapChatSdk {
       } else {
         that.creatClient();
         that.status = true;
+        console.log("666");
       }
     });
   }
