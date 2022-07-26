@@ -1,46 +1,38 @@
 
-# swap-chat-js是一款款专注于在你的项目中添加web3通讯能力的插件
+# Intro
+swapchat-js is a small sdk that allows you to use swapchat more quickly
 
-## 序言
+> You can install and experience swapchat in chrome first
+> 
+> Downloads: https://chrome.google.com/webstore/detail/swapchat/cljogniamdljbpeapjdbdigbjmipfpgh
 
-> swap-chat-js是一款针对web3通讯能力的全方位解决方案。
-
-## 项目信息
-
-1. 原创作者：tfhan
-2. 开源协议：MIT
-3. 发布日期：2022-07-14
-4. 联系方式：1157123521@qq.com
-5. 开源地址：https://github.com/Generative-Labs/swap-chat-js.git
-//
-## 主要功能
-//
-
-## 基础使用方法
-
-```
-$ npm install swap-chat-js
-```
-
-```
-$ yarn add swap-chat-js 
-```
+## Installation
+> npm i swap-chat-js 
+> 
+or 
+> yarn add swap-chat-js
+> 
+> 
+> 
+## Usage
 
 ```javascript
 import SwapChatSdk from 'swap-chat-js';
 
-// 需要创建SwapChatSdk的实例 传入两个真实dom 元素为参数，第一个参数为调起元素的触发器，第二个元素为聊天工具的插槽容器
+// You need to create an instance of SwapChatSdk Pass in two dom elements as parameters.
+// The first element is the trigger that brings up the element and the second element is the slot container for the chat tool
 const SwapChatSdkStance = new SwapChatSdk(
       dom1,
       dom2
     );
-//  需要调用实例的方法 instance.exect()
+//  Methods requiring calls to instances instance.exect()
 SwapChatSdkStance.exect()
+```
 
-//react项目示例index.jsx
+## Using swapchat-js in react
+```javascript
 import SwapChatSdk from 'swap-chat-js';
 import react, { useEffect, useRef } from "react";
-import "./App.css";
 function App() {
   const buttonRef = useRef();
   const containRef = useRef();
@@ -65,16 +57,13 @@ function App() {
 
 export default App;
 ```
+## Using swapchat-js in vue
 ```vue
-//vue项目示例index.vue
 <template>
   <div class="hello">
     <button ref="button"></button>
     <div ref="container">
-
     </div>
-
-    
   </div>
 </template>
 <script>
@@ -95,9 +84,4 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
 ```
