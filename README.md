@@ -37,13 +37,24 @@ function App() {
   const buttonRef = useRef();
   const containRef = useRef();
   useEffect(() => {
+    const defaultParams = {
+      platform: "twitter",//平台
+      user: { name: "hantengfei5888", avatarUrl: "" },//user relate
+      friend: {
+        name: "100trillionUSD",
+        avatarUrl: "",
+        id: "",
+      },//friend  relate
+      space: { id: "", title: "" }, //群聊
+    };
     const SwapChatSdkStance = new SwapChatSdk(
       buttonRef.current,
       containRef.current,
       {
         width:400,
         height:600,
-      }
+      },
+       { ...defaultParams }
     );
     SwapChatSdkStance.exect();
   }, []);

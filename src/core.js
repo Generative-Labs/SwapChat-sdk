@@ -60,9 +60,9 @@ class SwapChatSdk {
   creatClient() {
     const that = this;
     let { platform, user, friend, space } = that.defaultParams;
-    // if (!user.name || user.name === friend.name) {
-    //   return;
-    // }
+    if (!user.name || user.name === friend.name) {
+      return;
+    }
     let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
     try {
       if (user.name || friend.name) {
