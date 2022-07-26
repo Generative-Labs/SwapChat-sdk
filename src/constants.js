@@ -1,1 +1,1 @@
-export const iframeUrl = "https://chat.web3messaging.online";
+export const baseUrl = "https://chat.web3messaging.online";

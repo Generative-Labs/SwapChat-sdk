@@ -34,3 +34,6 @@ export const getElementById = (className = "") => {
   }
   return document.getElementById(className);
 };
+export const isObj = (obj) => {
+  return Object.prototype.toString.call(obj) === "[object Object]";
+};

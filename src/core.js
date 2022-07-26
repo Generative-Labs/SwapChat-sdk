@@ -1,15 +1,27 @@
-import { addEvent, isDOM, createElement, getElementById } from "./utils";
-import { iframeUrl } from "./constants";
+import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
+import { baseUrl } from "./constants";
 class SwapChatSdk {
-  constructor(content, container, options = {}) {
+  constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
       return this;
     }
     const defaultOp = { height: 600, width: 400 };
-    this.defaultOptions =
-      Object.prototype.toString.call(options) === "[object Object]"
-        ? Object.assign({}, defaultOp, options)
-        : defaultOp;
+    const defaultParams = {
+      platform: "twitter",
+      user: { name: "", avatarUrl: "" },
+      friend: {
+        name: "",
+        avatarUrl: "",
+        id: "",
+      },
+      space: { id: "", title: "" },
+    };
+    this.defaultOptions = isObj(options)
+      ? Object.assign({}, defaultOp, options)
+      : defaultOp;
+    this.defaultParams = isObj(params)
+      ? Object.assign({}, defaultParams, params)
+      : defaultParams;
     this.status = false;
     this.contenWrapper = content;
     this.button = `<div style="
@@ -47,8 +59,37 @@ class SwapChatSdk {
   }
   creatClient() {
     const that = this;
-    if (this.currentMessageBoxEle) {
-      this.container.appendChild(this.currentMessageBoxEle);
+    let { platform, user, friend, space } = that.defaultParams;
+    // if (!user.name || user.name === friend.name) {
+    //   return;
+    // }
+    let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
+    try {
+      if (user.name || friend.name) {
+        iframeUrl += `&userHash=${encodeURIComponent(
+          user.name + "@@" + friend.name
+        )}`;
+      }
+      if (space.spacid && space.title) {
+        let spaceHash = `${space.id}@@${space.title}`;
+        iframeUrl += `&spaceHash=${encodeURIComponent(spaceHash)}`;
+      }
+      if (user.avatarUrl) {
+        iframeUrl += `&userAvatar=${encodeURIComponent(user.avatarUrl)}`;
+      }
+      if (friend.avatarUrl) {
+        iframeUrl += `&friendAvatar=${encodeURIComponent(friend.avatarUrl)}`;
+      }
+      if (friend.id) {
+        iframeUrl += `&friendId=${encodeURIComponent(friend.id)}`;
+      }
+    } catch (e) {
+      console.log("请检查params的值");
+    }
+    const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
+    if (IframeDomWrapper) {
+      IframeDomWrapper.innerHTML = "";
+      IframeDomWrapper.innerHTML = `<iframe class="twitter-swapchat-message-header-iframe" style='width: 100%; height: ${that.defaultOptions.height}px; border: 0;' src=${iframeUrl}></iframe>`;
       return;
     }
     let messageBoxEle =
@@ -102,7 +143,7 @@ class SwapChatSdk {
       const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
       if (IframeDomWrapper) {
         IframeDomWrapper.innerHTML = "";
-        IframeDomWrapper.innerHTML = `<iframe class="twitter-swapchat-message-header-iframe" style='width: 100%; height: ${that.defaultOptions.height}px; border: 0;' src="https://chat.web3messaging.online"></iframe>`;
+        IframeDomWrapper.innerHTML = `<iframe class="twitter-swapchat-message-header-iframe" style='width: 100%; height: ${that.defaultOptions.height}px; border: 0;' src=${iframeUrl}></iframe>`;
       }
     });
     messageHeaderEle.appendChild(homeIconEle);
@@ -112,7 +153,7 @@ class SwapChatSdk {
     messageBodyEle.innerHTML = `<iframe
         class="twitter-swapchat-message-header-iframe"
         style="width: 100%; height: ${this.defaultOptions.height}px; border: 0;"
-        src="https://chat.web3messaging.online"
+        src=${iframeUrl}
       ></iframe>`;
 
     messageBoxEle.appendChild(messageBodyEle);
@@ -120,7 +161,10 @@ class SwapChatSdk {
     this.currentMessageBoxEle = messageBoxEle;
   }
   closeClient() {
-    this.container.removeChild(this.currentMessageBoxEle);
+    if (this.currentMessageBoxEle) {
+      this.container.removeChild(this.currentMessageBoxEle);
+      this.currentMessageBoxEle = null;
+    }
   }
 }
 
