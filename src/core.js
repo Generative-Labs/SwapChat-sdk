@@ -18,10 +18,10 @@ class SwapChatSdk {
       space: { id: "", title: "" },
     };
     this.defaultOptions = isObj(options)
-      ? Object.assign({}, defaultOp, options)
+      ? merge({}, defaultOp, options)
       : defaultOp;
     this.defaultParams = isObj(params)
-      ? Object.assign({}, defaultParams, params)
+      ? merge({}, defaultParams, params)
       : defaultParams;
     this.status = false;
     this.contenWrapper = content;
@@ -55,7 +55,6 @@ class SwapChatSdk {
       } else {
         that.creatClient();
         that.status = true;
-        console.log("666");
       }
     });
   }
