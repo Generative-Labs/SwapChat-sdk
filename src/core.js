@@ -1,6 +1,7 @@
 import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
 import { baseUrl } from "./constants";
 import { merge, mergeConfig } from "./utils";
+import { Web3MQ } from "web3-mq";
 class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
@@ -58,7 +59,7 @@ class SwapChatSdk {
       }
     });
   }
-  creatClient() {
+  creactIframeUrl() {
     const that = this;
     let { platform, user, friend, space } = that.defaultParams;
     if (!user.name || user.name === friend.name) {
@@ -84,9 +85,12 @@ class SwapChatSdk {
       if (friend.id) {
         iframeUrl += `&friendId=${encodeURIComponent(friend.id)}`;
       }
-    } catch (e) {
-      console.log("请检查params的值");
-    }
+    } catch (e) {}
+    return iframeUrl;
+  }
+  creatClientBox() {
+    const that = this;
+    let iframeUrl = this.creactIframeUrl();
     const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
     if (IframeDomWrapper) {
       IframeDomWrapper.innerHTML = "";
@@ -160,6 +164,10 @@ class SwapChatSdk {
     messageBoxEle.appendChild(messageBodyEle);
     this.container.appendChild(messageBoxEle);
     this.currentMessageBoxEle = messageBoxEle;
+  }
+  loginByloginParams() {}
+  async creatClient() {
+    await this.creatClientBox();
   }
   closeClient() {
     if (this.currentMessageBoxEle) {

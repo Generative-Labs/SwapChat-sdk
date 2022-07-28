@@ -3,6 +3,7 @@ const webpack = require("webpack");
 module.exports = {
   entry: "./src/index.ts",
   mode: "production",
+  target: "node",
   //   watch: true,
   watchOptions: {
     // 默认为空，不监听的文件或文件夹，支持正则匹配如：ignored: "files/**/*.js"
