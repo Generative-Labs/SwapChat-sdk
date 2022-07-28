@@ -1,5 +1,6 @@
 import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
 import { baseUrl } from "./constants";
+import { merge, mergeConfig } from "./utils";
 class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
@@ -54,6 +55,7 @@ class SwapChatSdk {
       } else {
         that.creatClient();
         that.status = true;
+        console.log("666");
       }
     });
   }
@@ -167,5 +169,7 @@ class SwapChatSdk {
     }
   }
 }
+SwapChatSdk.merge = merge;
+SwapChatSdk.mergeConfig = mergeConfig;
 
 export default SwapChatSdk;
