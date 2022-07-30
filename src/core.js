@@ -1,7 +1,10 @@
 import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
 import { baseUrl } from "./constants";
+import { INTERFACE_TYPE, PLATFORM_ENUM } from "./services/type";
 import { merge, mergeConfig } from "./utils";
-import { Web3MQ } from "web3-mq";
+import { signMetamask } from "./services/utils";
+import { getRooms } from "./services/api";
+import axiosApiInstance, { isFreshToken } from "./services/axios";
 class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
@@ -9,14 +12,61 @@ class SwapChatSdk {
     }
     const defaultOp = { height: 600, width: 400 };
     const defaultParams = {
-      platform: "twitter",
-      user: { name: "", avatarUrl: "" },
-      friend: {
-        name: "",
-        avatarUrl: "",
-        id: "",
+      platform: PLATFORM_ENUM.SWAPCHAT, //PLATFORM_ENUM.SWAPCHAT,PLATFORM_ENUM.TWITTER,LATFORM_ENUM.OPENSEA,PLATFORM_ENUM.DISCORD
+      type: INTERFACE_TYPE.SINGLE, //“single”,INTERFACE_TYPE.GROUP,INTERFACE_TYPE.THREAD,INTERFACE_TYPE.CUSTOMER
+      roomPayload: {
+        //## type===INTERFACE_TYPE.SINGLE
+        //swapchat
+        swapchat_user_id: "",
+        user_avatar: "", // 可选
+        user_name: "", // 可选
+        //twitter
+        twitter_handle: "",
+        twitter_avatar: "",
+        //opensea
+        wallet_address: "",
+        //discord
+        discord_username: "",
+        //## type===INTERFACE_TYPE.GROUP
+        //swapchat
+        users: [], //[{userId:"",userAvatar:"",userName:""}]
+        //twitter
+        space_id: "",
+        //opensea
+        collection_name: "",
+        //discord
+        //#.........
+        //## type===INTERFACE_TYPE.THREAD
+        //swapchat
+        is_thread: "true", //"false","true"
+        room_id: "",
+        msg_id: "",
+        user_name: "",
+        user_avatar: "",
+        thread_msg: "",
+        //twitter
+        // is_thread: "true",
+        // room_id: "",
+        // msg_id: "",
+        // user_name: "",
+        // user_avatar: "",
+        // thread_msg: "",
+        //opensea
+        opensea_item_token_id: "",
+        opensea_item_contract_address: "",
+        chain_name: "",
+        opensea_coll_slug: "",
+        //discord
+        //#.........
       },
-      space: { id: "", title: "" },
+      roomId: "",
+      loginPaylod: {
+        login_random_secret: "",
+        signature: "",
+        wallet_address: "",
+        user_avatar: "",
+      },
+      access_token: "",
     };
     this.defaultOptions = isObj(options)
       ? merge({}, defaultOp, options)
@@ -59,38 +109,160 @@ class SwapChatSdk {
       }
     });
   }
-  creactIframeUrl() {
+  async creactIframeUrl() {
     const that = this;
-    let { platform, user, friend, space } = that.defaultParams;
-    if (!user.name || user.name === friend.name) {
+    let {
+      platform = PLATFORM_ENUM.SWAPCHAT,
+      type = INTERFACE_TYPE.SINGLE,
+      roomPayload: {
+        //## type===INTERFACE_TYPE.SINGLE
+        //swapchat
+        swapchat_user_id,
+        user_avatar, // 可选
+        user_name, // 可选
+        //twitter
+        twitter_handle,
+        twitter_avatar,
+        //opensea
+        wallet_address,
+        //discord
+        discord_username,
+        //## type===INTERFACE_TYPE.GROUP
+        //swapchat
+        users: [], //[{user_id:"",user_avatar:"",user_name:""}]
+        //twitter
+        space_id,
+        //opensea
+        collection_name,
+        //discord
+        //#.........
+        //## type===INTERFACE_TYPE.THREAD
+        //swapchat
+        is_thread, //"false","true"
+        room_id,
+        msg_id,
+        // user_name,
+        // user_avatar,
+        thread_msg,
+        //twitter
+        // is_thread: "true",
+        // room_id: "",
+        // msg_id: "",
+        // user_name: "",
+        // user_avatar: "",
+        // thread_msg: "",
+        //opensea
+        opensea_item_token_id,
+        opensea_item_contract_address,
+        chain_name,
+        opensea_coll_slug,
+        //discord
+        //#.........
+      },
+      roomId,
+      access_token,
+      loginPaylod: { login_random_secret, signature },
+    } = that.defaultParams;
+    let targetToken = access_token || axiosApiInstance.access_token;
+    let targetRoomId = roomId || "";
+    let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
+    if (!isFreshToken(token)) {
+      if (
+        loginPaylod &&
+        login_random_secret &&
+        signature &&
+        loginPaylod.wallet_address &&
+        loginPaylod.user_avatar
+      ) {
+        targetToken = await loginAfterSign(
+          signature,
+          loginPaylod.wallet_address,
+          login_random_secret,
+          loginPaylod.user_avatar
+        );
+      }
+      targetToken = await signMetamask();
+    }
+    if (!targetToken) {
       return;
     }
-    let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
-    try {
-      if (user.name || friend.name) {
-        iframeUrl += `&userHash=${encodeURIComponent(
-          user.name + "@@" + friend.name
-        )}`;
+    //     GetRoomsParams {
+    //     user_id?: string,
+    //     user_ids?: string[],
+    //     is_opensea_coll?: boolean,
+    //     opensea_coll_slug?: string
+    //     item_contract_address?: string,
+    //     is_twitter_space?: boolean
+    //     space_id?: string
+    //     space_title?: string,
+    //     target_user_avatar?: string
+
+    // }
+    if (!targetRoomId) {
+      let platType = `${platform}-${type}`;
+      switch (platType) {
+        case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.SINGLE}`:
+          if (swapchat_user_id) {
+            let resData = await getRooms({
+              user_id: swapchat_user_id,
+              user_name,
+              user_avatar,
+            });
+            if (resData.code !== 0) {
+              return;
+            }
+            if (roomData.data) {
+              targetRoomId = roomData.data;
+              iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
+                targetRoomId
+              )}&access_token=${encodeURIComponent(targetToken)}`;
+            }
+          }
+          break;
+        case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.SINGLE}`:
+          if (wallet_address) {
+            let resData = await getRooms({
+              user_id,
+              user_name,
+              user_avatar,
+            });
+            if (resData.code !== 0) {
+              return;
+            }
+            if (roomData.data) {
+              targetRoomId = roomData.data;
+              iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
+                targetRoomId
+              )}&access_token=${encodeURIComponent(targetToken)}`;
+            }
+          }
       }
-      if (space.spacid && space.title) {
-        let spaceHash = `${space.id}@@${space.title}`;
-        iframeUrl += `&spaceHash=${encodeURIComponent(spaceHash)}`;
-      }
-      if (user.avatarUrl) {
-        iframeUrl += `&userAvatar=${encodeURIComponent(user.avatarUrl)}`;
-      }
-      if (friend.avatarUrl) {
-        iframeUrl += `&friendAvatar=${encodeURIComponent(friend.avatarUrl)}`;
-      }
-      if (friend.id) {
-        iframeUrl += `&friendId=${encodeURIComponent(friend.id)}`;
-      }
-    } catch (e) {}
+    }
+    // try {
+    //   if (user.name || friend.name) {
+    //     iframeUrl += `&userHash=${encodeURIComponent(
+    //       user.name + "@@" + friend.name
+    //     )}`;
+    //   }
+    //   if (space.spacid && space.title) {
+    //     let spaceHash = `${space.id}@@${space.title}`;
+    //     iframeUrl += `&spaceHash=${encodeURIComponent(spaceHash)}`;
+    //   }
+    //   if (user.avatarUrl) {
+    //     iframeUrl += `&userAvatar=${encodeURIComponent(user.avatarUrl)}`;
+    //   }
+    //   if (friend.avatarUrl) {
+    //     iframeUrl += `&friendAvatar=${encodeURIComponent(friend.avatarUrl)}`;
+    //   }
+    //   if (friend.id) {
+    //     iframeUrl += `&friendId=${encodeURIComponent(friend.id)}`;
+    //   }
+    // } catch (e) {}
     return iframeUrl;
   }
-  creatClientBox() {
+  async creatClientBox() {
     const that = this;
-    let iframeUrl = this.creactIframeUrl();
+    let iframeUrl = await this.creactIframeUrl();
     const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
     if (IframeDomWrapper) {
       IframeDomWrapper.innerHTML = "";
@@ -165,7 +337,9 @@ class SwapChatSdk {
     this.container.appendChild(messageBoxEle);
     this.currentMessageBoxEle = messageBoxEle;
   }
-  loginByloginParams() {}
+  loginByloginParams() {
+    fetch(basurl);
+  }
   async creatClient() {
     await this.creatClientBox();
   }

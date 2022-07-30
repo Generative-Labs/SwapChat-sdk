@@ -3,6 +3,7 @@
   "version": "1.0.21",
   "description": "this is a chrome extension",
   "main": "lib/index.js",
+  "sideEffects": false,
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
@@ -18,15 +19,6 @@
   ],
   "author": "tfhan",
   "license": "MIT",
-  "dependencies": {
-    "-": "^0.0.1",
-    "@walletconnect/client": "^1.7.8",
-    "@walletconnect/qrcode-modal": "^1.7.8",
-    "D": "^1.0.0",
-    "axios": "^0.27.2",
-    "mqtt": "^4.3.7",
-    "web3-mq": "^1.2.23"
-  },
   "files": [
     "lib"
   ],
@@ -39,11 +31,17 @@
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
     "webpack": "^5.44.0",
-    "webpack-cli": "^4.10.0",
+    "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^4.9.3"
   },
   "bugs": {
     "url": "https://github.com/HanTengfeifei/SwapChat/issues"
   },
-  "homepage": "https://github.com/HanTengfeifei/SwapChat#readme"
+  "homepage": "https://github.com/HanTengfeifei/SwapChat#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "moment": "^2.29.1",
+    "swarm-js": "^0.1.40",
+    "web3": "^1.7.4"
+  }
 }
