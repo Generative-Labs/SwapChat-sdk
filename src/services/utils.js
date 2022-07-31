@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { PLATFORM_ENUM } from "./type";
-import * as chatApi from "../services/api";
+import * as chatApi from "./api";
 import moment from "moment";
 import axiosApiInstance from "./axios";
 const web3 = new Web3(window.ethereum);

@@ -5,7 +5,7 @@ import { merge, mergeConfig } from "./utils";
 import { signMetamask } from "./services/utils";
 import { getRooms } from "./services/api";
 import axiosApiInstance, { isFreshToken } from "./services/axios";
-class SwapChatSdk {
+export class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
       return this;
@@ -165,6 +165,7 @@ class SwapChatSdk {
     } = that.defaultParams;
     let targetToken = access_token || axiosApiInstance.access_token;
     let targetRoomId = roomId || "";
+    let tartgetMessageId = ''
     let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
     if (!isFreshToken(token)) {
       if (
@@ -198,46 +199,151 @@ class SwapChatSdk {
     //     target_user_avatar?: string
 
     // }
+    async function getRoomIdByParams(params){
+      let roomId = null
+      const roomData  = await getRooms({
+        ...params,
+      });
+      if (roomData.code !== 0) {
+        return;
+      }
+      if(roomData.data) {
+        roomId = roomData.data;
+      }
+      return roomId
+    }
     if (!targetRoomId) {
       let platType = `${platform}-${type}`;
       switch (platType) {
-        case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.SINGLE}`:
-          if (swapchat_user_id) {
-            let resData = await getRooms({
-              user_id: swapchat_user_id,
-              user_name,
-              user_avatar,
-            });
-            if (resData.code !== 0) {
-              return;
+         //thread
+         case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.THREAD}`:
+          // if (opensea_item_token_id&&opensea_item_contract_address&&chain_name&&opensea_coll_slug) {
+          //   let snapshotRoomId = await getRoomIdByParams({
+          //     opensea_coll_slug:opensea_coll_slug,
+          //   });
+          //   if (snapshotRoomId) {
+          //     targetRoomId = snapshotRoomId;
+          //   }
+            // if (room_id) {
+            //   targetRoomId = room_id;
+            // }
+          break;
+        case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.THREAD}`:
+          // if (space_id) {
+          //   let snapshotRoomId = await getRoomIdByParams({
+          //     is_twitter_space:true,
+          //     space_id,
+          //     space_title,
+          //   });
+          //   if (snapshotRoomId) {
+          //     targetRoomId = snapshotRoomId;
+          //   }
+          // }
+          if (room_id) {
+              targetRoomId = room_id;
+              tartgetMessageId = msg_id
             }
-            if (roomData.data) {
-              targetRoomId = roomData.data;
-              iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
-                targetRoomId
-              )}&access_token=${encodeURIComponent(targetToken)}`;
+          break;
+        //single
+        case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.SINGLE}`:
+          if ((swapchat_user_id||user_id)) {
+            const snapshotRoomId = await getRoomIdByParams({
+              user_id: swapchat_user_id||user_id,
+              user_name,
+              target_user_avatar:user_avatar,
+            })
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
             }
           }
           break;
         case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.SINGLE}`:
           if (wallet_address) {
-            let resData = await getRooms({
-              user_id,
-              user_name,
-              user_avatar,
+            let snapshotRoomId = await getRoomIdByParams({
+              target_user_avatar:user_avatar,
+              item_contract_address:wallet_address
             });
-            if (resData.code !== 0) {
-              return;
-            }
-            if (roomData.data) {
-              targetRoomId = roomData.data;
-              iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
-                targetRoomId
-              )}&access_token=${encodeURIComponent(targetToken)}`;
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
             }
           }
+          break;
+        case `${PLATFORM_ENUM.DISCORD}-${INTERFACE_TYPE.SINGLE}`:
+          if (discord_username||user_name) {
+            let snapshotRoomId = await getRoomIdByParams({
+              user_name:discord_username||user_name,
+            });
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
+            }
+          }
+          break;
+        case `${PLATFORM_ENUM.TWITTER}-${INTERFACE_TYPE.SINGLE}`:
+          if (twitter_handle && twitter_avatar) {
+            let snapshotRoomId = await getRoomIdByParams({
+              user_name:twitter_handle||user_name,
+              target_user_avatar:twitter_avatar
+            });
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
+            }
+          }
+          break;
+          //group
+          case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.GROUP}`:
+            if ((Array.isArray(users))) {
+              const snapshotRoomId = await getRoomIdByParams({
+                user_ids:users.map((item)=>{
+                  return item.user_id
+                })
+              })
+              if (snapshotRoomId) {
+                targetRoomId = snapshotRoomId;
+              }
+            }
+            break;
+          case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.GROUP}`:
+            if (collection_name) {
+              let snapshotRoomId = await getRoomIdByParams({
+                is_opensea_coll:true,
+                opensea_coll_slug:collection_name
+              });
+              if (snapshotRoomId) {
+                targetRoomId = snapshotRoomId;
+              }
+            }
+            break;
+          // case `${PLATFORM_ENUM.DISCORD}-${INTERFACE_TYPE.GROUP}`:
+          //   if (discord_username||user_name) {
+          //     let snapshotRoomId = await getRoomIdByParams({
+          //       user_name:discord_username||user_name,
+          //     });
+          //     if (snapshotRoomId) {
+          //       targetRoomId = snapshotRoomId;
+          //       iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
+          //         targetRoomId
+          //       )}&access_token=${encodeURIComponent(targetToken)}`;
+          //     }
+          //   }
+          //   break;
+          case `${PLATFORM_ENUM.TWITTER}-${INTERFACE_TYPE.GROUP}`:
+            if (space_id) {
+              let snapshotRoomId = await getRoomIdByParams({
+                is_twitter_space:true,
+                space_id,
+                space_title,
+              });
+              if (snapshotRoomId) {
+                targetRoomId = snapshotRoomId;
+              }
+            }
+            break;
+
       }
     }
+    iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
+      targetRoomId
+    )}&access_token=${encodeURIComponent(targetToken)}&msg_id=${encodeURIComponent(tartgetMessageId)}`;
     // try {
     //   if (user.name || friend.name) {
     //     iframeUrl += `&userHash=${encodeURIComponent(
@@ -263,6 +369,9 @@ class SwapChatSdk {
   async creatClientBox() {
     const that = this;
     let iframeUrl = await this.creactIframeUrl();
+    if(!iframeUrl){
+      return 
+    }
     const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
     if (IframeDomWrapper) {
       IframeDomWrapper.innerHTML = "";
@@ -337,9 +446,6 @@ class SwapChatSdk {
     this.container.appendChild(messageBoxEle);
     this.currentMessageBoxEle = messageBoxEle;
   }
-  loginByloginParams() {
-    fetch(basurl);
-  }
   async creatClient() {
     await this.creatClientBox();
   }
@@ -352,5 +458,3 @@ class SwapChatSdk {
 }
 SwapChatSdk.merge = merge;
 SwapChatSdk.mergeConfig = mergeConfig;
-
-export default SwapChatSdk;
