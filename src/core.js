@@ -447,7 +447,11 @@ export class SwapChatSdk {
     this.currentMessageBoxEle = messageBoxEle;
   }
   async creatClient() {
+    try{
     await this.creatClientBox();
+  }catch{
+    console.log('something wrong')
+  }
   }
   closeClient() {
     if (this.currentMessageBoxEle) {
