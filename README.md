@@ -127,6 +127,75 @@ SwapChatSdkStance.exect()
 ```
 
 ## Using swapchat-js in react
+#### Twitter 1v1 chat
+```javascript
+const params = {
+  platform: "twitter",
+  type: "single",
+  room_payload: {
+    user_name: "SwapChatNFT",
+    user_avatar:
+      "https://pbs.twimg.com/profile_images/1506560330876731393/tLk4jXKq_400x400.jpg",
+  },
+};
+```
+
+#### Group chat with Twitter space
+```javascript
+const params = {
+      platform: 'twitter',
+      type: 'group',
+      room_payload: {
+        space_id: '1BdxYwElXVoGX',
+        space_title: '测试3',
+      },
+    };
+```
+#### Opensea 1v1 chat 
+```javascript
+const params = {
+      platform: 'opensea',
+      type: 'single',
+      room_payload: {
+        user_name: 'king250',
+      },
+    };
+```
+#### Group chat with opensea collection
+```javascript
+const params = {
+      platform: 'opensea',
+      type: 'group',
+      room_payload: {
+        collection_name: 'founders-coins',
+      },
+    };
+```
+####  Opensea nft item create thread chat  
+```javascript
+const params = {
+      platform: 'opensea',
+      type: 'thread',
+      room_payload: {
+        opensea_coll_slug: 'yoloholiday',
+        opensea_item_token_id: '4096',
+        opensea_item_contract_address:
+          '0xb5643598496b159263c67bd0d25728713f5aad04',
+        chain_name: 'ethereum',
+      },
+    };
+```
+####  Discord 1v1 chat  
+```javascript
+const params = {
+      platform: 'discord',
+      type: 'single',
+      room_payload: {
+        user_name: '方庭',
+        user_id: '3162',
+      },
+    };
+```
 ```javascript
 import SwapChatSdk from 'swap-chat-js';
 import react, { useEffect, useRef } from "react";
@@ -134,7 +203,7 @@ function App() {
   const buttonRef = useRef();
   const containRef = useRef();
   useEffect(() => {
-    const defaultParams = {
+    const params = {
       platform:'twitter',
       type:'group',
       room_payload:{
@@ -149,7 +218,7 @@ function App() {
         width:400,
         height:600,
       },
-       { ...defaultParams }
+       { ...params }
     );
     SwapChatSdkStance.exect();
   }, []);
@@ -187,7 +256,8 @@ export default {
       instance.refs.container,
       {
         width: 400,
-        height: 600},
+        height: 600
+        },
       {
       platform:'discord',
       type:'single',
