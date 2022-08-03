@@ -1,4 +1,5 @@
 
+
 import path from 'path';
 import babel from '@rollup/plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
@@ -22,10 +23,13 @@ const isDev = process.env.ROLLUP_WATCH || false;
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-const externalDependencies = ['axios', '@babel/runtime/helpers/extends'];
+const externalDependencies = ['axios',
+// 'util','buffer','url', 
+'web3',
+'@babel/runtime/helpers/extends'];
 
 const baseConfig = {
-  input: getPath('./src/index.js'),
+  input: getPath('./src/index.ts'),
 };
 
 const basePlugins = [
@@ -63,13 +67,16 @@ const basePlugins = [
     extensions,
   }),
   babel({
-    presets: ['@babel/preset-react'],
+    // presets: ['@babel/preset-react'],
     babelHelpers: 'runtime',
     plugins: ['@babel/plugin-transform-runtime'],
     exclude: 'node_modules/**',
     extensions,
   }),
-  resolve({ browser: true }, extensions),
+  resolve({ 
+    browser: true,
+    preferBuiltins:true 
+  }, extensions),
   commonjs(),
   isDev ? null : terser(),
 ];
@@ -80,10 +87,12 @@ const config = {
   output: [
     {
       file: pkg.main,
-      format: 'cjs',
+      format: 'umd',
       sourcemap: isDev,
+      name:'SwapChatSdk',
       globals: {
-        axios: 'axios'
+        axios: 'axios',
+        web3:'Web3'
       },
     },
   ],

@@ -5,6 +5,7 @@
   "main": "dist/index.ts",
   "scripts": {
     "dev": "rm -fr dist && rollup -c rollup.config.js -w",
+    "start": "rm -fr dist && rollup -c rollup.config.js -w",
     "build": "rm -fr dist && rollup -c rollup.config.js"
   },
   "husky": {

@@ -1,5 +1,4 @@
 
-
 # Intro
 swapchat-js is a small sdk that allows you to use swapchat more quickly
 

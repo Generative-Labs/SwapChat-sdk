@@ -18,7 +18,7 @@ export function isDOM() {
         return (
           obj &&
           typeof obj === "object" &&
-          obj.nodeType === 1 &&
+          (obj.nodeType === 1) &&
           typeof obj.nodeName === "string"
         );
       };
@@ -217,3 +217,5 @@ export function merge(/* obj1, obj2, obj3, ... */) {
 export function isArray(val) {
   return Array.isArray(val);
 }
+
+
