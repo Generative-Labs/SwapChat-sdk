@@ -4,7 +4,7 @@ import { INTERFACE_TYPE, PLATFORM_ENUM } from "./services/type";
 import { merge, mergeConfig } from "./utils";
 import { signMetamask,loginAfterSign,register,getOpenSeaInfo,creactThreads } from "./services/utils";
 import { getRooms } from "./services/api";
-import axiosApiInstance, { isFreshToken, tokenMgr } from "./services/axios";
+import { isFreshToken, tokenMgr } from "./services/axios";
  class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
@@ -109,7 +109,6 @@ import axiosApiInstance, { isFreshToken, tokenMgr } from "./services/axios";
         that.status = false;
       } else {
         that.creatClient();
-        console.log('close')
         that.status = true;
       }
     });
