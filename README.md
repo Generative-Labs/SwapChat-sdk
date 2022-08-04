@@ -31,7 +31,7 @@ Parameter|Description|Required
 ***
 Properties for the params parameter object
 Properties|Type|Value|Default|Description|Required
-------- |:---------:|:---------:|:---------:|:---------:|:---------:|
+------- |:-----:|:---------:|:---------:|:---------:|:---------:|
 |platform|string|twitter,discord,opensea,swapchat|swapchat|The platform that will use the sdk, currently supports twitter,discord,opensea,swapchat|no
 |type |string|single,group,thread|single|The way of using sdk, currently supports single, group, thread|no
 |room_payload|object|{}|Parameters required to create room_id|For different platforms and different ways of calling up the chat window, you need to set the corresponding parameters|If the value of the room_id attribute is set, room_payload does not need to be set. If room_id is not set, then room_payload is required
