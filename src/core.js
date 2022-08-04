@@ -1,5 +1,6 @@
 import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
 import { baseUrl } from "./constants";
+// import type { OptionsType,ParamsType } from "./type";
 import { INTERFACE_TYPE, PLATFORM_ENUM } from "./services/type";
 import { merge, mergeConfig } from "./utils";
 import { signMetamask,loginAfterSign,register,getOpenSeaInfo,creactThreads } from "./services/utils";
@@ -17,7 +18,6 @@ import { isFreshToken, tokenMgr } from "./services/axios";
       room_payload: {
         //## type===INTERFACE_TYPE.SINGLE
         //swapchat
-        swapchat_user_id: "",
         user_id:'',
         user_avatar: "", // 可选
         user_name: "", // 可选
@@ -41,8 +41,6 @@ import { isFreshToken, tokenMgr } from "./services/axios";
         //swapchat
         is_thread: "true", //"false","true"
         msg_id: "",
-        user_name: "",
-        user_avatar: "",
         thread_msg: "",
         //twitter
         // is_thread: "true",

@@ -32,12 +32,12 @@ Parameter|Description|Required
 Properties for the params parameter object
 Properties|Type|Value|Default|Description|Required
 ---- |:-----:|:----:|:-----:|:-----:|:---------:|
-|platform|string|twitter,discord,opensea,swapchat|swapchat|The platform that will use the sdk, currently supports twitter,discord,opensea,swapchat|no
-|type |string|single,group,thread|single|The way of using sdk, currently supports single, group, thread|no
+|platform|string|twitter,<br />discord,<br />opensea,<br />swapchat|swapchat|The platform <br /> that  <br />will use  <br />the sdk, currently supports twitter,discord,opensea,swapchat|no
+|type |string|single,<br />group,<br />thread|single|The way of<br />using sdk,<br /> currently supports<br /> single,<br /> group,<br /> thread|no
 |room_payload|object|{}|Parameters required to create room_id|For different platforms and different ways of calling up the chat window, you need to set the corresponding parameters|If the value of the room_id attribute is set, room_payload does not need to be set. If room_id is not set, then room_payload is required
-|room_id |string|Generate a room_id according to the official api documentation|none|room_id corresponding to the chat room|If the value of the room_payload property is set, room_id does not need to be set. If room_payload is not set, then room_id is required
-|login_payload|object|{signature,wallet_address,login_random_secret,user_avatar}|{}|Login parameters that need to be set|If the value of the access_token attribute is set, the login_payload does not need to be set. If the access_token is not set, then the login_payload is required.
-|access_token |string|Generate a access_token according to the official api documentation|none|access_token corresponding to the login user|If the value of the login_payload property is set, access_token does not need to be set. If login_payload is not set, then access_token is required
+|room_id |string|Generate <br />a room_id<br /> according to <br />the official <br />api documentation|none|room_id corresponding to the chat room|If the value of the room_payload property is set, room_id does not need to be set. If room_payload is not set, then room_id is required
+|login_payload|object|{signature,<br />wallet_address,<br />login_random_secret,<br />user_avatar}|{}|Login parameters<br /> that need <br />to be set|If the value of the access_token attribute is set, the login_payload does not need to be set. If the access_token is not set, then the login_payload is required.
+|access_token |string|Generate a<br /> access_token <br />according to <br />the official<br /> api documentation|none|access_token corresponding to the login user|If the value of the login_payload property is set, access_token does not need to be set. If login_payload is not set, then access_token is required
 ***
 Properties for the login_payload parameter object
 Properties|Type|Value|Default|Description|Required
