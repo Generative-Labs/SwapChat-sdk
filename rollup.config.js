@@ -24,7 +24,7 @@ const isDev = process.env.ROLLUP_WATCH || false;
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 const externalDependencies = ['axios',
-// 'util','buffer','url', 
+'moment',
 'web3',
 '@babel/runtime/helpers/extends'];
 
@@ -92,7 +92,8 @@ const config = {
       name:'SwapChatSdk',
       globals: {
         axios: 'axios',
-        web3:'Web3'
+        web3:'Web3',
+        moment:'moment'
       },
     },
   ],
