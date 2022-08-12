@@ -1,10 +1,11 @@
 
 # Intro
 SwapChat-js is a small sdk that allows you to use swapchat more quickly
+[see SwapChat-js docs ](https://button-sdk-documentation.pages.dev/docs/intro)
 
 > You can install and experience swapchat in chrome first
 > 
-> Downloads: https://chrome.google.com/webstore/detail/swapchat/cljogniamdljbpeapjdbdigbjmipfpgh
+> [Downloads SwaChat Extension](https://chrome.google.com/webstore/detail/swapchat/cljogniamdljbpeapjdbdigbjmipfpgh)
 
 ## Installation
 > npm i swap-chat-js 
