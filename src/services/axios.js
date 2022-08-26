@@ -9,6 +9,21 @@ export function parseJwt(str) {
     )
   );
 }
+export function tokenMgr() {
+  return {
+    getToken: (type = "swap_chat_sdk_access_token") => {
+      let accessToken = localStorage.getItem(type);
+      return accessToken ? accessToken : "";
+    },
+    setToken: (v='') => {
+      if (v) {
+        localStorage.setItem("swap_chat_sdk_access_token", `Bearer ${v}`);
+      } else {
+        localStorage.setItem("swap_chat_sdk_access_token", "");
+      }
+    },
+  };
+}
 const axiosApiInstance = axios.create();
 axiosApiInstance.defaults.timeout = 100000;
 axiosApiInstance.defaults.headers.post["Content-Type"] = "application/json";
@@ -42,11 +57,11 @@ axiosApiInstance.interceptors.request.use(
           token.data.data &&
           token.data.data.access_token
         ) {
-          tokenMgrt().setToken(token.data.data.access_token);
-          newConfig.headers["Authorization"] = tokenMgrt().getToken();
+          tokenMgr().setToken(token.data.data.access_token);
+          newConfig.headers["Authorization"] = tokenMgr().getToken();
           return newConfig;
         } else {
-          tokenMgrt().setToken('');
+          tokenMgr().setToken('');
         }
       }
       newConfig.headers["Authorization"] = accessToken;
@@ -77,21 +92,6 @@ export function isFreshToken(accessToken) {
     return true;
   }
   return false;
-}
-export function tokenMgr() {
-  return {
-    getToken: (type = "swap_chat_sdk_access_token") => {
-      let accessToken = localStorage.getItem(type);
-      return accessToken ? accessToken : "";
-    },
-    setToken: (v='') => {
-      if (v) {
-        localStorage.setItem("swap_chat_sdk_access_token", `Bearer ${v}`);
-      } else {
-        localStorage.setItem("swap_chat_sdk_access_token", "");
-      }
-    },
-  };
 }
 
 export default axiosApiInstance;
