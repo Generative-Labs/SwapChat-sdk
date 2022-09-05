@@ -1,12 +1,23 @@
-import { addEvent, isDOM, createElement, getElementById, isObj } from "./utils";
-import { baseUrl } from "./constants";
+import { addEvent, isDOM, createElement, getElementById, isObj } from './utils';
+import { baseUrl } from './constants';
 // import type { OptionsType,ParamsType } from "./type";
-import { INTERFACE_TYPE, PLATFORM_ENUM } from "./services/type";
-import { merge, mergeConfig } from "./utils";
-import { signMetamask,loginAfterSign,register,getOpenSeaInfo,creactThreads } from "./services/utils";
-import { getRooms } from "./services/api";
-import { isFreshToken, tokenMgr } from "./services/axios";
- class SwapChatSdk {
+import { INTERFACE_TYPE, PLATFORM_ENUM } from './services/type';
+import { merge, mergeConfig } from './utils';
+import {
+  getSecretByAddressAndPlatform,
+  getTokenAfterSign,
+  getEthAccount,
+} from './services/utils';
+import {
+  signMetamask,
+  loginAfterSign,
+  register,
+  getOpenSeaInfo,
+  creactThreads,
+} from './services/utils';
+import { getRooms } from './services/api';
+import { isFreshToken, tokenMgr } from './services/axios';
+class SwapChatSdk {
   constructor(content, container, options = {}, params = {}) {
     if (!isDOM()(content) || !isDOM()(container)) {
       return this;
@@ -18,30 +29,30 @@ import { isFreshToken, tokenMgr } from "./services/axios";
       room_payload: {
         //## type===INTERFACE_TYPE.SINGLE
         //swapchat
-        user_id:'',
-        user_avatar: "", // 可选
-        user_name: "", // 可选
+        user_id: '',
+        user_avatar: '', // 可选
+        user_name: '', // 可选
         //twitter
-        twitter_handle: "",
-        twitter_avatar: "",
+        twitter_handle: '',
+        twitter_avatar: '',
         //opensea
-        wallet_address: "",
+        wallet_address: '',
         //discord
-        discord_username: "",
+        discord_username: '',
         //## type===INTERFACE_TYPE.GROUP
         //swapchat
         users: [], //[{userId:"",userAvatar:"",userName:""}]
         //twitter
-        space_id: "",
+        space_id: '',
         //opensea
-        collection_name: "",
+        collection_name: '',
         //discord
         //#.........
         //## type===INTERFACE_TYPE.THREAD
         //swapchat
-        is_thread: "true", //"false","true"
-        msg_id: "",
-        thread_msg: "",
+        is_thread: 'true', //"false","true"
+        msg_id: '',
+        thread_msg: '',
         //twitter
         // is_thread: "true",
         // room_id: "",
@@ -50,21 +61,21 @@ import { isFreshToken, tokenMgr } from "./services/axios";
         // user_avatar: "",
         // thread_msg: "",
         //opensea
-        opensea_item_token_id: "",
-        opensea_item_contract_address: "",
-        chain_name: "",
-        opensea_coll_slug: "",
+        opensea_item_token_id: '',
+        opensea_item_contract_address: '',
+        chain_name: '',
+        opensea_coll_slug: '',
         //discord
         //#.........
       },
-      roomId: "",
+      roomId: '',
       login_paylod: {
-        login_random_secret: "",
-        signature: "",
-        wallet_address: "",
-        user_avatar: "",
+        login_random_secret: '',
+        signature: '',
+        wallet_address: '',
+        user_avatar: '',
       },
-      access_token: "",
+      access_token: '',
     };
     this.defaultOptions = isObj(options)
       ? merge({}, defaultOp, options)
@@ -95,13 +106,19 @@ import { isFreshToken, tokenMgr } from "./services/axios";
   }
   exect() {
     let that = this;
-    if(!that.contentWrapper ||!that.container || that.contentWrapper === that.container){
-      console.log('The first parameter and the second parameter cannot be the same dom element')
-      return 
+    if (
+      !that.contentWrapper ||
+      !that.container ||
+      that.contentWrapper === that.container
+    ) {
+      console.log(
+        'The first parameter and the second parameter cannot be the same dom element',
+      );
+      return;
     }
-      that.contentWrapper.innerHTML = that.button;
+    that.contentWrapper.innerHTML = that.button;
     const firstButtonDom = that.contentWrapper.firstChild;
-    addEvent(firstButtonDom, "click", function () {
+    addEvent(firstButtonDom, 'click', function () {
       if (that.status) {
         that.closeClient();
         that.status = false;
@@ -168,8 +185,8 @@ import { isFreshToken, tokenMgr } from "./services/axios";
       login_paylod,
     } = that.defaultParams;
     let targetToken = access_token || tokenMgr().getToken();
-    let targetRoomId = room_id || "";
-    let tartgetMessageId = ''
+    let targetRoomId = room_id || '';
+    let tartgetMessageId = '';
     let iframeUrl = `${baseUrl}/chat/chatWebPage?platform=${platform}&fromPage=normal`;
     if (!isFreshToken(targetToken)) {
       if (
@@ -183,11 +200,13 @@ import { isFreshToken, tokenMgr } from "./services/axios";
           signature,
           login_paylod.wallet_address,
           login_random_secret,
-          login_paylod.user_avatar
+          login_paylod.user_avatar,
         );
-      }else{
+      } else {
         targetToken = await signMetamask(platform);
       }
+    } else {
+      tokenMgr().setToken(targetToken);
     }
     if (!targetToken) {
       return;
@@ -204,53 +223,58 @@ import { isFreshToken, tokenMgr } from "./services/axios";
     //     target_user_avatar?: string
 
     // }
-    async function getRoomIdByParams(params){
-      let roomId = null
-      console.log('rooms-params',params)
-      const roomData  = await getRooms({
+    async function getRoomIdByParams(params) {
+      let roomId = null;
+      console.log('rooms-params', params);
+      const roomData = await getRooms({
         ...params,
       });
       if (roomData.code !== 0) {
         return;
       }
-      if(roomData.data) {
+      if (roomData.data) {
         roomId = roomData.data;
       }
-      return roomId
+      return roomId;
     }
     if (!targetRoomId) {
       let platType = `${platform}-${type}`;
       switch (platType) {
-         //thread
-         case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.THREAD}`:
-          if (opensea_item_token_id && opensea_item_contract_address && chain_name && opensea_coll_slug) {
+        //thread
+        case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.THREAD}`:
+          if (
+            opensea_item_token_id &&
+            opensea_item_contract_address &&
+            chain_name &&
+            opensea_coll_slug
+          ) {
             let roomIdAndMsgId = await creactThreads({
-              is_opensea_item_thread:true,
-              opensea_coll_slug:opensea_coll_slug,
-              opensea_item_token_id:opensea_item_token_id,
+              is_opensea_item_thread: true,
+              opensea_coll_slug: opensea_coll_slug,
+              opensea_item_token_id: opensea_item_token_id,
               opensea_item_contract_address,
-              chain_name
+              chain_name,
             });
             if (roomIdAndMsgId) {
               targetRoomId = roomIdAndMsgId.room_id;
-              tartgetMessageId = roomIdAndMsgId.msg_id
+              tartgetMessageId = roomIdAndMsgId.msg_id;
             }
           }
           break;
         case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.THREAD}`:
           if (room_payload.room_id) {
-              targetRoomId = room_payload.room_id;
-              tartgetMessageId = msg_id
-            }
+            targetRoomId = room_payload.room_id;
+            tartgetMessageId = msg_id;
+          }
           break;
         //single
         case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.SINGLE}`:
-          if ((swapchat_user_id||user_id)) {
+          if (swapchat_user_id || user_id) {
             const snapshotRoomId = await getRoomIdByParams({
-              user_id: swapchat_user_id||user_id,
+              user_id: swapchat_user_id || user_id,
               user_name,
-              target_user_avatar:user_avatar,
-            })
+              target_user_avatar: user_avatar,
+            });
             if (snapshotRoomId) {
               targetRoomId = snapshotRoomId;
             }
@@ -258,35 +282,35 @@ import { isFreshToken, tokenMgr } from "./services/axios";
           break;
         case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.SINGLE}`:
           if (user_name) {
-            const c_address  = await getOpenSeaInfo({
+            const c_address = await getOpenSeaInfo({
               opensea_user_id: user_name,
             });
-            if(c_address){
-            const c_user_id  = await register({
-              platform:PLATFORM_ENUM.OPENSEA,
-              user_name: c_address,
-            });
-            if(c_user_id){
-            let snapshotRoomId = await getRoomIdByParams({
-              target_user_avatar:user_avatar,
-              user_id:c_user_id
-            });
-            if (snapshotRoomId) {
-              targetRoomId = snapshotRoomId;
+            if (c_address) {
+              const c_user_id = await register({
+                platform: PLATFORM_ENUM.OPENSEA,
+                user_name: c_address,
+              });
+              if (c_user_id) {
+                let snapshotRoomId = await getRoomIdByParams({
+                  target_user_avatar: user_avatar,
+                  user_id: c_user_id,
+                });
+                if (snapshotRoomId) {
+                  targetRoomId = snapshotRoomId;
+                }
+              }
             }
-           }
           }
-        }
           break;
         case `${PLATFORM_ENUM.DISCORD}-${INTERFACE_TYPE.SINGLE}`:
-          if ((discord_username||user_name)&&user_id) {
-            const c_user_id  = await register({
-              platform:PLATFORM_ENUM.DISCORD,
-              user_name: `${discord_username||user_name}#${user_id}`,
+          if ((discord_username || user_name) && user_id) {
+            const c_user_id = await register({
+              platform: PLATFORM_ENUM.DISCORD,
+              user_name: `${discord_username || user_name}#${user_id}`,
             });
-            if(c_user_id){
+            if (c_user_id) {
               let snapshotRoomId = await getRoomIdByParams({
-                user_id:c_user_id,
+                user_id: c_user_id,
               });
               if (snapshotRoomId) {
                 targetRoomId = snapshotRoomId;
@@ -296,89 +320,87 @@ import { isFreshToken, tokenMgr } from "./services/axios";
           break;
         case `${PLATFORM_ENUM.TWITTER}-${INTERFACE_TYPE.SINGLE}`:
           if (user_name) {
-            const c_user_id  = await register({
-              platform:PLATFORM_ENUM.TWITTER,
+            const c_user_id = await register({
+              platform: PLATFORM_ENUM.TWITTER,
               user_name: user_name,
-              user_avatar:user_avatar,
+              user_avatar: user_avatar,
             });
             let snapshotRoomId = await getRoomIdByParams({
-              user_id:c_user_id,
-              target_user_avatar:user_avatar
+              user_id: c_user_id,
+              target_user_avatar: user_avatar,
             });
             if (snapshotRoomId) {
               targetRoomId = snapshotRoomId;
             }
           }
           break;
-          //group
-          case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.GROUP}`:
-            if ((Array.isArray(users))) {
-              //暂时不支持
-              const snapshotRoomId = await getRoomIdByParams({
-                user_ids:users.map((item)=>{
-                  return item.user_id
-                })
-              })
-              if (snapshotRoomId) {
-                targetRoomId = snapshotRoomId;
-              }
+        //group
+        case `${PLATFORM_ENUM.SWAPCHAT}-${INTERFACE_TYPE.GROUP}`:
+          if (Array.isArray(users)) {
+            //暂时不支持
+            const snapshotRoomId = await getRoomIdByParams({
+              user_ids: users.map((item) => {
+                return item.user_id;
+              }),
+            });
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
             }
-            break;
-          case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.GROUP}`:
-            if (collection_name) {
-              let snapshotRoomId = await getRoomIdByParams({
-                is_opensea_coll:true,
-                opensea_coll_slug:collection_name
-              });
-              if (snapshotRoomId) {
-                targetRoomId = snapshotRoomId;
-              }
+          }
+          break;
+        case `${PLATFORM_ENUM.OPENSEA}-${INTERFACE_TYPE.GROUP}`:
+          if (collection_name) {
+            let snapshotRoomId = await getRoomIdByParams({
+              is_opensea_coll: true,
+              opensea_coll_slug: collection_name,
+            });
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
             }
-            break;
-          // case `${PLATFORM_ENUM.DISCORD}-${INTERFACE_TYPE.GROUP}`:
-          //   if (discord_username||user_name) {
-          //     let snapshotRoomId = await getRoomIdByParams({
-          //       user_name:discord_username||user_name,
-          //     });
-          //     if (snapshotRoomId) {
-          //       targetRoomId = snapshotRoomId;
-          //       iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
-          //         targetRoomId
-          //       )}&access_token=${encodeURIComponent(targetToken)}`;
-          //     }
-          //   }
-          //   break;
-          case `${PLATFORM_ENUM.TWITTER}-${INTERFACE_TYPE.GROUP}`:
-            if (space_id) {
-              let snapshotRoomId = await getRoomIdByParams({
-                is_twitter_space:true,
-                space_id,
-                space_title,
-              });
-              if (snapshotRoomId) {
-                targetRoomId = snapshotRoomId;
-              }
+          }
+          break;
+        // case `${PLATFORM_ENUM.DISCORD}-${INTERFACE_TYPE.GROUP}`:
+        //   if (discord_username||user_name) {
+        //     let snapshotRoomId = await getRoomIdByParams({
+        //       user_name:discord_username||user_name,
+        //     });
+        //     if (snapshotRoomId) {
+        //       targetRoomId = snapshotRoomId;
+        //       iframeUrl = `${baseUrl}/chat/chatWebPage?roomId=${encodeURIComponent(
+        //         targetRoomId
+        //       )}&access_token=${encodeURIComponent(targetToken)}`;
+        //     }
+        //   }
+        //   break;
+        case `${PLATFORM_ENUM.TWITTER}-${INTERFACE_TYPE.GROUP}`:
+          if (space_id) {
+            let snapshotRoomId = await getRoomIdByParams({
+              is_twitter_space: true,
+              space_id,
+              space_title,
+            });
+            if (snapshotRoomId) {
+              targetRoomId = snapshotRoomId;
             }
-            break;
-            default:
-              targetRoomId = ''
-
+          }
+          break;
+        default:
+          targetRoomId = '';
       }
     }
-    console.log('targetToken',targetToken)
+    console.log('targetToken', targetToken);
     try {
       if (targetToken) {
-        targetToken =targetToken.substring(7)
+        targetToken = targetToken.substring(7);
         iframeUrl += `&accessToken=${encodeURIComponent(targetToken)}`;
       }
       if (targetRoomId) {
-        iframeUrl += `&roomId=${encodeURIComponent(
-          targetRoomId
-        )}`;
-      }else{
-       let msg ='***The parameter named params may be set incorrectly, please set it according to the specification***'
-        console.log(msg)
-        return 
+        iframeUrl += `&roomId=${encodeURIComponent(targetRoomId)}`;
+      } else {
+        let msg =
+          '***The parameter named params may be set incorrectly, please set it according to the specification***';
+        console.log(msg);
+        return;
       }
       if (tartgetMessageId) {
         iframeUrl += `&threadMsgId=${encodeURIComponent(tartgetMessageId)}`;
@@ -389,12 +411,12 @@ import { isFreshToken, tokenMgr } from "./services/axios";
   async creatClientBox() {
     const that = this;
     let iframeUrl = await this.creactIframeUrl();
-    if(!iframeUrl){
-      return 
+    if (!iframeUrl) {
+      return;
     }
-    const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
+    const IframeDomWrapper = getElementById('twitter-swapchat-message-body');
     if (IframeDomWrapper) {
-      IframeDomWrapper.innerHTML = "";
+      IframeDomWrapper.innerHTML = '';
       IframeDomWrapper.innerHTML = `<iframe class="twitter-swapchat-message-header-iframe" style='width: 100%; height: ${that.defaultOptions.height}px; border: 0;' src=${iframeUrl}></iframe>`;
       return;
     }
@@ -402,13 +424,13 @@ import { isFreshToken, tokenMgr } from "./services/axios";
       createElement(`<div id="web3-swapchat-message-box" style="min-width:120px;width:100%;width:${this.defaultOptions.width}px;overflow:auto">
             </div>`);
     let homeIconEle = createElement(
-      "<img class='home-icon' src='https://chat.web3messaging.online/assets/icon/newHomeHeaderIcon.svg' alt='' style='width: auto;height: 28px;margin-right: 8px;border-radius: 4px;' >"
+      "<img class='home-icon' src='https://chat.web3messaging.online/assets/icon/newHomeHeaderIcon.svg' alt='' style='width: auto;height: 28px;margin-right: 8px;border-radius: 4px;' >",
     );
     let goHomeIconEle = createElement(
-      "<img class='go-home-icon' src='https://d97ch61yqe5j6.cloudfront.net/frontend/newRefreshIconx3.png' alt='' style='position: absolute;right: 50px;height: 22px;width: auto;z-index: 999;margin-right: 8px;border-radius: 4px; cursor: pointer;' >"
+      "<img class='go-home-icon' src='https://d97ch61yqe5j6.cloudfront.net/frontend/newRefreshIconx3.png' alt='' style='position: absolute;right: 50px;height: 22px;width: auto;z-index: 999;margin-right: 8px;border-radius: 4px; cursor: pointer;' >",
     );
     let slideToggleIconELe = createElement(
-      "<img class='slide-toggle-icon' id='web3-slide-toggle-icon'  src='https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png' alt='' style='position: absolute;right: 12px;height: 22px;width: auto;z-index: 999;margin-right: 8px;border-radius: 4px;cursor: pointer;'>"
+      "<img class='slide-toggle-icon' id='web3-slide-toggle-icon'  src='https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png' alt='' style='position: absolute;right: 12px;height: 22px;width: auto;z-index: 999;margin-right: 8px;border-radius: 4px;cursor: pointer;'>",
     );
     let messageHeaderEle =
       createElement(`<div class="twitter-swapchat-message-header" style='min-width:240px;position:relative;width:100%;align-items: center;
@@ -425,30 +447,30 @@ import { isFreshToken, tokenMgr } from "./services/axios";
             </div>
         `);
     let messageBodyEle = createElement(
-      "<div class='twitter-swapchat-message-body' id ='twitter-swapchat-message-body' style='overflow:hidden;transition: max-height .25s;max-height:1000px'></div>"
+      "<div class='twitter-swapchat-message-body' id ='twitter-swapchat-message-body' style='overflow:hidden;transition: max-height .25s;max-height:1000px'></div>",
     );
-    addEvent(messageHeaderEle, "click", function () {
-      const slideToggleIconElement = getElementById("web3-slide-toggle-icon");
+    addEvent(messageHeaderEle, 'click', function () {
+      const slideToggleIconElement = getElementById('web3-slide-toggle-icon');
       const oriSrc = slideToggleIconElement.src;
-      if (oriSrc.indexOf("Up") !== -1) {
+      if (oriSrc.indexOf('Up') !== -1) {
         slideToggleIconElement.setAttribute(
-          "src",
-          "https://d97ch61yqe5j6.cloudfront.net/frontend/headerDown.png"
+          'src',
+          'https://d97ch61yqe5j6.cloudfront.net/frontend/headerDown.png',
         );
-        messageBodyEle.style.maxHeight = "0px";
+        messageBodyEle.style.maxHeight = '0px';
       } else {
         slideToggleIconElement.setAttribute(
-          "src",
-          "https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png"
+          'src',
+          'https://d97ch61yqe5j6.cloudfront.net/frontend/headerUp.png',
         );
-        messageBodyEle.style.maxHeight = "1000px";
+        messageBodyEle.style.maxHeight = '1000px';
       }
     });
-    addEvent(goHomeIconEle, "click", function (e) {
+    addEvent(goHomeIconEle, 'click', function (e) {
       e.stopPropagation();
-      const IframeDomWrapper = getElementById("twitter-swapchat-message-body");
+      const IframeDomWrapper = getElementById('twitter-swapchat-message-body');
       if (IframeDomWrapper) {
-        IframeDomWrapper.innerHTML = "";
+        IframeDomWrapper.innerHTML = '';
         IframeDomWrapper.innerHTML = `<iframe class="twitter-swapchat-message-header-iframe" style='width: 100%; height: ${that.defaultOptions.height}px; border: 0;' src=${iframeUrl}></iframe>`;
       }
     });
@@ -467,11 +489,11 @@ import { isFreshToken, tokenMgr } from "./services/axios";
     this.currentMessageBoxEle = messageBoxEle;
   }
   async creatClient() {
-    try{
-    await this.creatClientBox();
-  }catch(e){
-    console.log('something wrong')
-  }
+    try {
+      await this.creatClientBox();
+    } catch (e) {
+      console.log('something wrong');
+    }
   }
   closeClient() {
     if (this.currentMessageBoxEle) {
@@ -482,4 +504,7 @@ import { isFreshToken, tokenMgr } from "./services/axios";
 }
 SwapChatSdk.merge = merge;
 SwapChatSdk.mergeConfig = mergeConfig;
-export default SwapChatSdk
+SwapChatSdk.getSecretByAddressAndPlatform = getSecretByAddressAndPlatform;
+SwapChatSdk.getTokenAfterSign = getTokenAfterSign;
+SwapChatSdk.getEthAccount = getEthAccount;
+export default SwapChatSdk;
