@@ -4,7 +4,7 @@ import { baseUrl } from './constants';
 import { INTERFACE_TYPE, PLATFORM_ENUM } from './services/type';
 import { merge, mergeConfig } from './utils';
 import {
-  getSecretByAddressAndPlatform,
+  getSignContentByAddressAndPlatform,
   getTokenAfterSign,
   getEthAccount,
 } from './services/utils';
@@ -504,7 +504,8 @@ class SwapChatSdk {
 }
 SwapChatSdk.merge = merge;
 SwapChatSdk.mergeConfig = mergeConfig;
-SwapChatSdk.getSecretByAddressAndPlatform = getSecretByAddressAndPlatform;
+SwapChatSdk.getSignContentByAddressAndPlatform =
+  getSignContentByAddressAndPlatform;
 SwapChatSdk.getTokenAfterSign = getTokenAfterSign;
 SwapChatSdk.getEthAccount = getEthAccount;
 export default SwapChatSdk;

@@ -145,12 +145,11 @@ export const creactThreads = async (params) => {
     return { room_id, msg_id };
   }
 };
-export const getSecretByAddressAndPlatform = async (
+export const getSignContentByAddressAndPlatform = async (
   address = '',
   platform = PLATFORM_ENUM.SWAPCHAT,
 ) => {
   if (!platform || !address) {
-    debugger;
     throw new Error('The platform and address is required!');
   }
   if (platform === PLATFORM_ENUM.OPENSEA) {
@@ -194,7 +193,7 @@ export const getTokenAfterSign = async (
     throw new Error('The signResult and address and signContent is required!');
   }
   let token = '';
-  token = await loginAfterSign(res, address, signContent, userAvatar);
+  token = await loginAfterSign(signResult, address, signContent, userAvatar);
   if (typeof token === 'string' && token) {
     return token.substring(7);
   }
